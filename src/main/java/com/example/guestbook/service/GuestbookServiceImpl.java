@@ -22,7 +22,7 @@ public class GuestbookServiceImpl implements GuestbookService{
     @Override
     public Long register(GuestbookDTO dto) {
 
-        //service interface에 구현된 dtoToEntity 활용
+        //service interface 에 구현된 dtoToEntity 활용
         Guestbook entity = dtoToEntity(dto);
         repository.save(entity);
 
