@@ -6,11 +6,13 @@ import com.example.guestbook.dto.PageResultDTO;
 import com.example.guestbook.entity.Guestbook;
 import com.example.guestbook.repository.GuestbookRepository;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.dynamic.DynamicType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -37,5 +39,12 @@ public class GuestbookServiceImpl implements GuestbookService{
         Function<Guestbook, GuestbookDTO> fn = (entity -> entityToDto(entity));
 
         return new PageResultDTO<>(result, fn);
+    }
+
+    @Override
+    public GuestbookDTO read(Long gno) {
+        Optional<Guestbook> result = repository.findById(gno);
+        // findById() 를 통해 Entity 객체를 가져왔다면 entityToDto()를 이용해 Entity 객체를 DTO로 변환해 반환한다.
+        return result.isPresent() ? entityToDto(result.get()) : null;
     }
 }

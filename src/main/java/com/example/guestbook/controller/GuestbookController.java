@@ -46,4 +46,14 @@ public class GuestbookController {
     public void list(@ModelAttribute PageRequestDTO pageRequestDTO, Model model) {
         model.addAttribute("result", service.getList(pageRequestDTO));
     }
+
+    @GetMapping({"/read", "/modify"})
+    // 다시 목록 페이지로 돌아가는 데이터를 같이 저장하기 위해 PageRequestDTO를 파라미터로 같이 사용한다.
+    public void read(Long gno, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
+        // GET 방식으로 gno 값을 받아 Model에 GuestbookDTO 객체를 담아 전달한다.
+        GuestbookDTO dto = service.read(gno);
+
+        model.addAttribute("dto", dto);
+
+    }
 }
