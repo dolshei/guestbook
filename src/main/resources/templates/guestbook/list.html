@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content} )}">
+
+    <th:block th:fragment="content">
+
+        <h1>gestbook test</h1>
+
+        <table class="table table-striped">
+            <thead>
+
+            <tr>
+                <th scope="col">Gno</th>
+                <th scope="col">Title</th>
+                <th scope="col">Writer</th>
+                <th scope="col">Regdate</th>
+
+            </tr>
+            </thead>
+            <tbody>
+
+            <!--th:each를 이용해 PageResultDTO 안에 있는 dtoList를 반복처리한다-->
+            <tr th:each="dto : ${result.dtoList}" >
+                <th scope="row">[[${dto.gno}]]</th>
+                <td>[[${dto.title}]]</td>
+                <td>[[${dto.writer}]]</td>
+                <td>[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!--페이지의 이전(previous)와 다음(next)부분은 if를 이용해 처리-->
+        <ul class="pagination h-100 justify-content-center align-items-center">
+            <!--현재 페이지 여부를 체크해 'active'라는 이름의 클래스가 출력되도록 작성-->
+            <li class="page-item" th:if="${result.prev}">
+                <!--이전(previous)의 경우 PageResultDTO의 start 값에서 1적은 값으로 지정-->
+                <a class="page-link" th:href="@{/guestbook/list(page= ${result.start -1})}" tabindex="-1">Previous</a>
+            </li>
+
+            <li th:class=" 'page-item' + ${result.page == page?'active':''} " th:each="page: ${result.pageList}">
+                <a class="page-link" th:href="@{/guestbook/list(page = ${page})}">
+                    [[${page}]]
+                </a>
+            </li>
+            <!--현재 페이지 여부를 체크해 'active'라는 이름의 클래스가 출력되도록 작성-->
+            <li class="page-item" th:if="${result.next}">
+                <!--다음(next)의 경우 PageResultDTO의 end 값에서 1큰 값으로 지정-->
+                <a class="page-link" th:href="@{/guestbook/list(page = ${result.end +1})}">Next</a>
+            </li>
+        </ul>
+
+    </th:block>
+
+</th:block>
+</html>
