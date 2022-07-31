@@ -5,7 +5,15 @@
 
     <th:block th:fragment="content">
 
-        <h1>gestbook test</h1>
+        <h1>gestbook test
+            <span>
+             <!--추가-->
+                <a th:href="@{/guestbook/register}">
+                    <button type="button" class="btn btn-outline-primary">REGISTER
+                    </button>
+                </a>
+            </span>
+        </h1>
 
         <table class="table table-striped">
             <thead>
@@ -22,7 +30,11 @@
 
             <!--th:each를 이용해 PageResultDTO 안에 있는 dtoList를 반복처리한다-->
             <tr th:each="dto : ${result.dtoList}" >
-                <th scope="row">[[${dto.gno}]]</th>
+                <th scope="row">
+                    <a th:href="@{/guestbook/read(gno = ${dto.gno}, page= ${result.page})}">
+                        [[${dto.gno}]]
+                    </a>
+                </th>
                 <td>[[${dto.title}]]</td>
                 <td>[[${dto.writer}]]</td>
                 <td>[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]</td>
@@ -49,6 +61,38 @@
                 <a class="page-link" th:href="@{/guestbook/list(page = ${result.end +1})}">Next</a>
             </li>
         </ul>
+
+        <div class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Modal body text goes here.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script th:inline="javascript">
+            <!--등록 후 전달되는 msg 값을 확인한다-->
+            var msg = [[${msg}]];
+
+            console.log(msg);
+
+            <!--등록후 msg 변수에 새로 생성된 글의 번호가 할당 -> msg 변수의 값을 이용해 모달창을 실행한다-->
+            if(msg){
+                $(".modal").modal();
+            }
+        </script>
 
     </th:block>
 
