@@ -11,6 +11,10 @@ public interface GuestbookService {
     GuestbookDTO read(Long gno);
     Long register(GuestbookDTO dto);
 
+    void remove(Long gno);
+
+    void modify(GuestbookDTO dto);
+
     PageResultDTO<GuestbookDTO, Guestbook> getList(PageRequestDTO requestDTO);
 
     // service 에서는 파라미터를 DTO타입으로 받기 때문에 JPA로 처리하기 위해서는 Entity 타입의 객체로 변환해야 하는 작업이 반드시 필요하다.
@@ -39,4 +43,5 @@ public interface GuestbookService {
 
         return dto;
     }
+
 }

@@ -35,7 +35,11 @@
                         [[${dto.gno}]]
                     </a>
                 </th>
-                <td>[[${dto.title}]]</td>
+                <td>
+                    <a th:href="@{/guestbook/read(gno = ${dto.gno}, page= ${result.page})}">
+                        [[${dto.title}]]
+                    </a>
+                </td>
                 <td>[[${dto.writer}]]</td>
                 <td>[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]</td>
             </tr>
