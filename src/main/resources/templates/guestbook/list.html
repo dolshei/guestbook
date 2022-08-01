@@ -7,13 +7,35 @@
 
         <h1>gestbook test
             <span>
-             <!--추가-->
                 <a th:href="@{/guestbook/register}">
                     <button type="button" class="btn btn-outline-primary">REGISTER
                     </button>
                 </a>
             </span>
         </h1>
+
+        <form action="/guestbook/list" method="get" id="searchForm">
+            <div class="input-group">
+                <!--Search 버튼을 클릭하면 무조건 1페이지를 지정하도록 한다-->
+                <input type="hidden" name="page" value = "1">
+                <div class="input-group-prepend">
+                    <select class="custom-select" name="type">
+                        <!--PageRequestDTO를 이용해 검색 타입에 맞게 자동으로 선택될 수 있도록 구성-->
+                        <option th:selected="${pageRequestDTO.type == null}">-------</option>
+                        <option value="t" th:selected="${pageRequestDTO.type =='t'}" >제목</option>
+                        <option value="c" th:selected="${pageRequestDTO.type =='c'}"  >내용</option>
+                        <option value="w"  th:selected="${pageRequestDTO.type =='w'}" >작성자</option>
+                        <option value="tc"  th:selected="${pageRequestDTO.type =='tc'}" >제목 + 내용</option>
+                        <option value="tcw"  th:selected="${pageRequestDTO.type =='tcw'}" >제목 + 내용 + 작성자</option>
+                    </select>
+                </div>
+                <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
+                <div class="input-group-append" id="button-addon4">
+                    <button class="btn btn-outline-secondary btn-search" type="button">Search</button>
+                    <button class="btn btn-outline-secondary btn-clear" type="button">Clear</button>
+                </div>
+            </div>
+        </form>
 
         <table class="table table-striped">
             <thead>
@@ -48,22 +70,26 @@
 
         <!--페이지의 이전(previous)와 다음(next)부분은 if를 이용해 처리-->
         <ul class="pagination h-100 justify-content-center align-items-center">
-            <!--현재 페이지 여부를 체크해 'active'라는 이름의 클래스가 출력되도록 작성-->
-            <li class="page-item" th:if="${result.prev}">
-                <!--이전(previous)의 경우 PageResultDTO의 start 값에서 1적은 값으로 지정-->
-                <a class="page-link" th:href="@{/guestbook/list(page= ${result.start -1})}" tabindex="-1">Previous</a>
+            <li class="page-item " th:if="${result.prev}">
+                <a class="page-link" th:href="@{/guestbook/list(page= ${result.start -1},
+                    type=${pageRequestDTO.type} ,
+                    keyword = ${pageRequestDTO.keyword} ) }" tabindex="-1">Previous</a>
             </li>
 
-            <li th:class=" 'page-item' + ${result.page == page?'active':''} " th:each="page: ${result.pageList}">
-                <a class="page-link" th:href="@{/guestbook/list(page = ${page})}">
+            <li th:class=" 'page-item ' + ${result.page == page?'active':''} " th:each="page: ${result.pageList}">
+                <a class="page-link" th:href="@{/guestbook/list(page = ${page} ,
+                   type=${pageRequestDTO.type} ,
+                   keyword = ${pageRequestDTO.keyword}  )}">
                     [[${page}]]
                 </a>
             </li>
-            <!--현재 페이지 여부를 체크해 'active'라는 이름의 클래스가 출력되도록 작성-->
+
             <li class="page-item" th:if="${result.next}">
-                <!--다음(next)의 경우 PageResultDTO의 end 값에서 1큰 값으로 지정-->
-                <a class="page-link" th:href="@{/guestbook/list(page = ${result.end +1})}">Next</a>
+                <a class="page-link" th:href="@{/guestbook/list(page= ${result.end + 1} ,
+                    type=${pageRequestDTO.type} ,
+                    keyword = ${pageRequestDTO.keyword} )}">Next</a>
             </li>
+
         </ul>
 
         <div class="modal" tabindex="-1" role="dialog">
@@ -87,7 +113,7 @@
         </div>
 
         <script th:inline="javascript">
-            <!--등록 후 전달되는 msg 값을 확인한다-->
+            <!-- 등록 후 전달되는 msg 값을 확인한다 -->
             var msg = [[${msg}]];
 
             console.log(msg);
@@ -96,6 +122,21 @@
             if(msg){
                 $(".modal").modal();
             }
+
+            var searchForm = $("#searchForm");
+
+            $('.btn-search').click(function(e){
+
+                searchForm.submit();
+
+            });
+
+            // Clear 버튼을 클릭하면 모든 검색 조건 없이 새로 목록 페이지를 보여준다
+            $('.btn-clear').click(function(e){
+
+                searchForm.empty().submit();
+
+            });
         </script>
 
     </th:block>
